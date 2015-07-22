@@ -1,12 +1,13 @@
 /*
   Control servo motors through Amazon Echo
-   Based on the source code from: http://www.seeedstudio.com/wiki/WiFi_Serial_Transceiver_Module
+  Based on the source code from: http://www.seeedstudio.com/wiki/WiFi_Serial_Transceiver_Module
 */
 
 #define cs   10  // Pins for the display
 #define dc   9
 #define rst  8 
 
+#include <ArduinoJson.h>
 #include "config.h"
 #include <Servo.h>
 
@@ -85,20 +86,11 @@ void loop()
     }
     i++;
   }
-  Serial.println(json);
+  StaticJsonBuffer<200> jsonBuffer;
+  JsonObject& root = jsonBuffer.parseObject(json);
+  boolean ok = root["ok"];
 
-  /*JsonObject root = parser.parse(json);
-  double temp = root["temp"];
-  double pressure = root["pressure"];
-  double humidity = root["humidity"];
-  temp -= 273.15; // from kelvin to degree celsius
-  dbgSerial.println(temp);
-  dbgSerial.println(pressure);
-  dbgSerial.println(humidity);
-  dbgSerial.println("====");*/
-  const char y = json[0];
-  const char x = '{';
-  if(y==x) {
+  if(ok) {
     servo.writeMicroseconds(1700);  // Counter clockwise
     delay(2000);
     servo.writeMicroseconds(1500);  // Stop
