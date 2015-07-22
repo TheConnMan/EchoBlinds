@@ -8,13 +8,16 @@
 #define rst  8 
 
 #include "config.h"
+#include <Servo.h>
 
+Servo servo;
 const char ssid[] = SSID;
 const char pass[] = PASS;
 const char dst_ip[] = DST_IP;
 
 void setup()
 {
+  servo.attach(9);
   Serial.begin(9600);
   Serial2.begin(115200);
   Serial2.setTimeout(5000);
@@ -43,6 +46,7 @@ void setup()
   delay(5000);
   Serial2.println("AT+CIPMUX=0"); // set to single connection mode
 }
+
 void loop()
 {
   String cmd = "AT+CIPSTART=\"TCP\",\"";
@@ -72,14 +76,17 @@ void loop()
   while (i<6000) {
     if(Serial2.available()) {
       char c = Serial2.read();
-      Serial.write(c);
       json[n]=c;
+      if(c=='}') {
+        break;
+      }
       n++;
       i=0;
     }
     i++;
   }
   Serial.println(json);
+
   /*JsonObject root = parser.parse(json);
   double temp = root["temp"];
   double pressure = root["pressure"];
@@ -89,8 +96,21 @@ void loop()
   dbgSerial.println(pressure);
   dbgSerial.println(humidity);
   dbgSerial.println("====");*/
+  const char y = json[0];
+  const char x = '{';
+  if(y==x) {
+    servo.writeMicroseconds(1700);  // Counter clockwise
+    delay(2000);
+    servo.writeMicroseconds(1500);  // Stop
+    delay(2000);
+    servo.writeMicroseconds(1300);  // Clockwise
+    delay(2000);
+    servo.writeMicroseconds(1500);  // Stop
+    delay(2000);
+  }
   delay(60000);
 }
+
      
 boolean connectWiFi()
 {
