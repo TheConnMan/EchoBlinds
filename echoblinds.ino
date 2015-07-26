@@ -13,9 +13,6 @@
 
 Servo servo1;
 Servo servo2;
-const char ssid[] = SSID;
-const char pass[] = PASS;
-const char dst_ip[] = DST_IP;
 int servo1count = 0;
 int servo2count = 0;
 
@@ -58,13 +55,14 @@ void loop()
   cmd += DST_IP;
   cmd += "\",80";
   Serial2.println(cmd);
-  Serial.println(cmd);
   if(Serial2.find("Error")) return;
-  cmd = "GET /test/";
+  cmd = "GET /api/v1/get?key=";
+  cmd += API_KEY;
+  cmd += "&clientId=";
+  cmd += CLIENT_ID;
   cmd += " HTTP/1.0\r\n\r\n";
   Serial2.print("AT+CIPSEND=");
   Serial2.println(cmd.length());
-  Serial.println(cmd);
   if(Serial2.find(">")){
     Serial.print(">");
   }else{
@@ -73,11 +71,14 @@ void loop()
     delay(1000);
     return;
   }
-  Serial2.print(cmd);
+  Serial2.println(cmd);
   unsigned int i = 0; //timeout counter
   int n = 1; // char counter
   char json[100]="{";
-  while (!Serial2.find("{")){}
+  Serial.println("Serial is reading: ");
+  while (!Serial2.find("{")){
+    if (Serial2.read()==-1){break;}
+  }
   while (i<6000) {
     if(Serial2.available()) {
       char c = Serial2.read();
@@ -89,11 +90,16 @@ void loop()
   }
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(json);
-  boolean ok = root["success"];
+  boolean success_ok = root["success"];
+  Serial.println(success_ok);
   
-  if(ok) {
+  if(success_ok) {
     JsonObject& message = root["message"];
     boolean op = message["open"];
+    Serial.print("Servo 1: ");
+    Serial.println(servo1count);
+    Serial.print("Servo 2: ");
+    Serial.println(servo2count);
     if(op && servo1count == 0 && servo2count == 0){
       servo1.writeMicroseconds(1700);  // Counter clockwise
       servo2.writeMicroseconds(1700);  // Counter clockwise
