@@ -16,6 +16,8 @@ Servo servo2;
 const char ssid[] = SSID;
 const char pass[] = PASS;
 const char dst_ip[] = DST_IP;
+int servo1count = 0;
+int servo2count = 0;
 
 void setup()
 {
@@ -92,21 +94,25 @@ void loop()
   if(ok) {
     JsonObject& message = root["message"];
     boolean op = message["open"];
-    if(op){
+    if(op && servo1count == 0 && servo2count == 0){
       servo1.writeMicroseconds(1700);  // Counter clockwise
       servo2.writeMicroseconds(1700);  // Counter clockwise
       delay(2000);
       servo1.writeMicroseconds(1500);  // Stop
       servo2.writeMicroseconds(1500);  // Stop
       delay(2000);
+      servo1count ++;
+      servo2count ++;
     }
-    else {
+    else if (!op && servo1count == 1 && servo2count == 1) {
       servo1.writeMicroseconds(1300);  // Clockwise
       servo2.writeMicroseconds(1300);  // Clockwise
       delay(2000);
       servo1.writeMicroseconds(1500);  // Stop
       servo2.writeMicroseconds(1500);  // Stop
       delay(2000);
+      servo1count --;
+      servo2count --;
     }
   }
 }
