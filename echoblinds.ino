@@ -99,6 +99,8 @@ void loop()
       servo1.writeMicroseconds(1500);  // Stop
       servo2.writeMicroseconds(1500);  // Stop
       delay(2000);
+    }
+    else {
       servo1.writeMicroseconds(1300);  // Clockwise
       servo2.writeMicroseconds(1300);  // Clockwise
       delay(2000);
@@ -106,7 +108,6 @@ void loop()
       servo2.writeMicroseconds(1500);  // Stop
       delay(2000);
     }
-    delay(60000);
   }
 }
 
