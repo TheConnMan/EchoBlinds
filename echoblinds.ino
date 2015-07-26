@@ -75,7 +75,6 @@ void loop()
   unsigned int i = 0; //timeout counter
   int n = 1; // char counter
   char json[100]="{";
-  Serial.println("Serial is reading: ");
   while (!Serial2.find("{")){
     if (Serial2.read()==-1){break;}
   }
@@ -91,15 +90,10 @@ void loop()
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(json);
   boolean success_ok = root["success"];
-  Serial.println(success_ok);
-  
+    
   if(success_ok) {
     JsonObject& message = root["message"];
     boolean op = message["open"];
-    Serial.print("Servo 1: ");
-    Serial.println(servo1count);
-    Serial.print("Servo 2: ");
-    Serial.println(servo2count);
     if(op && servo1count == 0 && servo2count == 0){
       servo1.writeMicroseconds(1700);  // Counter clockwise
       servo2.writeMicroseconds(1700);  // Counter clockwise
@@ -123,7 +117,6 @@ void loop()
   }
 }
 
-     
 boolean connectWiFi()
 {
   Serial2.println("AT+CWMODE=1");
