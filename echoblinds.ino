@@ -80,9 +80,6 @@ void loop()
     if(Serial2.available()) {
       char c = Serial2.read();
       json[n]=c;
-      if(c=='}') {
-        break;
-      }
       n++;
       i=0;
     }
@@ -90,23 +87,27 @@ void loop()
   }
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(json);
-  boolean ok = root["ok"];
-
+  boolean ok = root["success"];
+  
   if(ok) {
-    servo1.writeMicroseconds(1700);  // Counter clockwise
-    servo2.writeMicroseconds(1700);  // Counter clockwise
-    delay(2000);
-    servo1.writeMicroseconds(1500);  // Stop
-    servo2.writeMicroseconds(1500);  // Stop
-    delay(2000);
-    servo1.writeMicroseconds(1300);  // Clockwise
-    servo2.writeMicroseconds(1300);  // Clockwise
-    delay(2000);
-    servo1.writeMicroseconds(1500);  // Stop
-    servo2.writeMicroseconds(1500);  // Stop
-    delay(2000);
+    JsonObject& message = root["message"];
+    boolean op = message["open"];
+    if(op){
+      servo1.writeMicroseconds(1700);  // Counter clockwise
+      servo2.writeMicroseconds(1700);  // Counter clockwise
+      delay(2000);
+      servo1.writeMicroseconds(1500);  // Stop
+      servo2.writeMicroseconds(1500);  // Stop
+      delay(2000);
+      servo1.writeMicroseconds(1300);  // Clockwise
+      servo2.writeMicroseconds(1300);  // Clockwise
+      delay(2000);
+      servo1.writeMicroseconds(1500);  // Stop
+      servo2.writeMicroseconds(1500);  // Stop
+      delay(2000);
+    }
+    delay(60000);
   }
-  delay(60000);
 }
 
      
