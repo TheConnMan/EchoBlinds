@@ -11,14 +11,16 @@
 #include "config.h"
 #include <Servo.h>
 
-Servo servo;
+Servo servo1;
+Servo servo2;
 const char ssid[] = SSID;
 const char pass[] = PASS;
 const char dst_ip[] = DST_IP;
 
 void setup()
 {
-  servo.attach(9);
+  servo1.attach(9);
+  servo2.attach(8);
   Serial.begin(9600);
   Serial2.begin(115200);
   Serial2.setTimeout(5000);
@@ -91,13 +93,17 @@ void loop()
   boolean ok = root["ok"];
 
   if(ok) {
-    servo.writeMicroseconds(1700);  // Counter clockwise
+    servo1.writeMicroseconds(1700);  // Counter clockwise
+    servo2.writeMicroseconds(1700);  // Counter clockwise
     delay(2000);
-    servo.writeMicroseconds(1500);  // Stop
+    servo1.writeMicroseconds(1500);  // Stop
+    servo2.writeMicroseconds(1500);  // Stop
     delay(2000);
-    servo.writeMicroseconds(1300);  // Clockwise
+    servo1.writeMicroseconds(1300);  // Clockwise
+    servo2.writeMicroseconds(1300);  // Clockwise
     delay(2000);
-    servo.writeMicroseconds(1500);  // Stop
+    servo1.writeMicroseconds(1500);  // Stop
+    servo2.writeMicroseconds(1500);  // Stop
     delay(2000);
   }
   delay(60000);
