@@ -3,10 +3,6 @@
   Based on the source code from: http://www.seeedstudio.com/wiki/WiFi_Serial_Transceiver_Module
 */
 
-#define cs   10  // Pins for the display
-#define dc   9
-#define rst  8 
-
 #include <ArduinoJson.h>
 #include "config.h"
 #include <Servo.h>
@@ -135,4 +131,12 @@ boolean connectWiFi()
     Serial.println("Can not connect to the WiFi.");
     return false;
   }
+  if (!Serial2.available()){
+    delay(5000);
+    software_Reset();
+    }
 }
+
+void software_Reset() {// Restarts program from beginning but does not reset the peripherals and registers
+  asm volatile ("  jmp 0");  
+}  
