@@ -9,8 +9,7 @@
 
 Servo servo1;
 Servo servo2;
-int servo1count = 0;
-int servo2count = 0;
+int fractionOpen = -1;
 
 void setup()
 {
@@ -90,25 +89,23 @@ void loop()
   if(success_ok) {
     JsonObject& message = root["message"];
     boolean op = message["open"];
-    if(op && servo1count == 0 && servo2count == 0){
-      servo1.writeMicroseconds(1700);  // Counter clockwise
-      servo2.writeMicroseconds(1700);  // Counter clockwise
-      delay(2000);
-      servo1.writeMicroseconds(1500);  // Stop
-      servo2.writeMicroseconds(1500);  // Stop
-      delay(2000);
-      servo1count ++;
-      servo2count ++;
+    int microseconds;
+    if (op) {
+      microseconds = 1700;
+    } else {
+      microseconds = 1300;
     }
-    else if (!op && servo1count == 1 && servo2count == 1) {
-      servo1.writeMicroseconds(1300);  // Clockwise
-      servo2.writeMicroseconds(1300);  // Clockwise
-      delay(2000);
+    if (fractionOpen < 0 || (op && fractionOpen == 0) || (!op && fractionOpen == 1)) {
+      servo1.writeMicroseconds(microseconds);  // Counter clockwise
+      servo2.writeMicroseconds(microseconds);  // Counter clockwise
+      delay(8000);
       servo1.writeMicroseconds(1500);  // Stop
       servo2.writeMicroseconds(1500);  // Stop
-      delay(2000);
-      servo1count --;
-      servo2count --;
+      if (op) {
+        fractionOpen = 1;
+      } else {
+        fractionOpen = 0;
+      }
     }
   }
 }
