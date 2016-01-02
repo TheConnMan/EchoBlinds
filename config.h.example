@@ -1,0 +1,5 @@
+#define SSID "wifi ssid"
+#define PASS "wifi password"
+#define DST_IP "relay dns"
+#define API_KEY "relay key"
+#define CHANNEL "slack channel"
