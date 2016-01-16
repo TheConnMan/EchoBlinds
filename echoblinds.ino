@@ -24,7 +24,6 @@ void setup()
     Serial.println("WiFi - Module is ready");
   }else{
     Serial.println("Module dosn't respond.");
-    //while(1);
   }
   delay(1000);
   // try to connect to wifi
