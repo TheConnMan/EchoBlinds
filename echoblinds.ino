@@ -47,10 +47,11 @@ void loop()
 {
   String cmd = "AT+CIPSTART=\"TCP\",\"";
   cmd += DST_IP;
-  cmd += "\",80";
+  cmd += "\",";
+  cmd += PORT;
   Serial2.println(cmd);
   if(Serial2.find("Error")) return;
-  cmd = "GET /api/v1/get?key=";
+  cmd = "GET /api/get?apiKey=";
   cmd += API_KEY;
   cmd += "&clientId=";
   cmd += CLIENT_ID;
