@@ -13,17 +13,17 @@ int fractionOpen = -1;
 
 void setup()
 {
-  servo1.attach(9);
-  servo2.attach(8);
+  servo1.attach(8);
+  servo2.attach(9);
   Serial.begin(9600);
   Serial2.begin(115200);
   Serial2.setTimeout(5000);
   Serial.println("Init");
   delay(1000);
   if(Serial2.find("ready")) {
-    Serial.println("WiFi - Module is ready");
+    Serial.println("WiFi - Module is ready.");
   }else{
-    Serial.println("Module dosn't respond.");
+    Serial.println("Module doesn't respond.");
   }
   delay(1000);
   // try to connect to wifi
@@ -31,12 +31,12 @@ void setup()
   for(int i=0;i<5;i++){
     if(connectWiFi()){
       connected = true;
-      Serial.println("Connected to WiFi...");
+      Serial.println("Connected to WiFi.");
       break;
     }
   }
   if (!connected){
-    Serial.println("Coudn't connect to WiFi.");
+    Serial.println("Coudn't connect to WiFi. Stand by.");
     while(1);
   }
   delay(5000);
@@ -87,25 +87,28 @@ void loop()
   boolean success_ok = root["success"];
     
   if(success_ok) {
-    JsonObject& message = root["message"];
-    boolean op = message["open"];
     int microseconds;
-    if (op) {
+    if (fractionOpen < 0 || fractionOpen == 0) {
+      Serial.println("Opening blinds.");
       microseconds = 1700;
-    } else {
-      microseconds = 1300;
-    }
-    if (fractionOpen < 0 || (op && fractionOpen == 0) || (!op && fractionOpen == 1)) {
-      servo1.writeMicroseconds(microseconds);  // Counter clockwise
-      servo2.writeMicroseconds(microseconds);  // Counter clockwise
+      servo1.writeMicroseconds(microseconds);
+      servo2.writeMicroseconds(microseconds);  
       delay(8000);
-      servo1.writeMicroseconds(1500);  // Stop
-      servo2.writeMicroseconds(1500);  // Stop
-      if (op) {
-        fractionOpen = 1;
-      } else {
-        fractionOpen = 0;
-      }
+      Serial.println("Done with delay.");
+      servo1.writeMicroseconds(1500); 
+      servo2.writeMicroseconds(1500); 
+      fractionOpen = 1;
+    }
+    else if (fractionOpen == 1) {
+      Serial.println("Closing blinds.");
+      microseconds = 1300;
+      servo1.writeMicroseconds(microseconds);
+      servo2.writeMicroseconds(microseconds);  
+      delay(8000);
+      Serial.println("Done with delay."); 
+      servo1.writeMicroseconds(1500); 
+      servo2.writeMicroseconds(1500); 
+      fractionOpen = 0;
     }
   }
 }

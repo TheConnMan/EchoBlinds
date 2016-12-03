@@ -1,4 +1,6 @@
 #define SSID "wifi ssid"
 #define PASS "wifi password"
 #define DST_IP "relay ip"
+#define PORT "port"
 #define API_KEY "relay key"
+#define	CLIENT_ID "client id"
