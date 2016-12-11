@@ -31,7 +31,6 @@ void setup()
   for(int i=0;i<5;i++){
     if(connectWiFi()){
       connected = true;
-      Serial.println("Connected to WiFi.");
       break;
     }
   }
@@ -85,27 +84,28 @@ void loop()
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& root = jsonBuffer.parseObject(json);
   boolean success_ok = root["success"];
+  String open_status = root["message"]["open"];
     
   if(success_ok) {
     int microseconds;
-    if (fractionOpen < 0 || fractionOpen == 0) {
+    Serial.println(fractionOpen);
+    Serial.println(open_status);
+    if (fractionOpen == -1 || (open_status == "open" && fractionOpen == 0) || (open_status == "toggle" && fractionOpen == 0)) {
       Serial.println("Opening blinds.");
       microseconds = 1700;
       servo1.writeMicroseconds(microseconds);
       servo2.writeMicroseconds(microseconds);  
       delay(8000);
-      Serial.println("Done with delay.");
       servo1.writeMicroseconds(1500); 
       servo2.writeMicroseconds(1500); 
       fractionOpen = 1;
     }
-    else if (fractionOpen == 1) {
+    else if ((open_status == "close" && fractionOpen == 1) || (open_status == "toggle" && fractionOpen == 1)) {
       Serial.println("Closing blinds.");
       microseconds = 1300;
       servo1.writeMicroseconds(microseconds);
       servo2.writeMicroseconds(microseconds);  
-      delay(8000);
-      Serial.println("Done with delay."); 
+      delay(8000); 
       servo1.writeMicroseconds(1500); 
       servo2.writeMicroseconds(1500); 
       fractionOpen = 0;
